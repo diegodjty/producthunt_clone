@@ -1,12 +1,37 @@
 import React from 'react'
+import styled from '@emotion/styled';
+import { css } from '@emotion/core';
+
+
+const InputText = styled.input`
+    border: solid 1px var(--gray3);
+    padding: 1rem;
+    min-width: 300px;
+`
+
+const InputSubmit = styled.button`
+    height: 3rem;
+    width: 3rem;
+    display: block;
+    background-size: 2rem;
+    background-image: url('/static/img/searchIcon.svg');
+    background-repeat: no-repeat;
+    position: absolute;
+    right: 1rem;
+    top: .8rem;
+    border: none;
+    text-indent: -999px;
+    cursor: pointer;
+`
 
 const Search = () => {
     return (
-        <form action="">
-            <input 
+        <form css={css` position: relative;`}>
+            <InputText 
                 type="text"
+                placeholder=" Search Products"
             />
-            <button type="submit">Search</button>
+            <InputSubmit type="submit">Search</InputSubmit>
         </form>
     )
 }
