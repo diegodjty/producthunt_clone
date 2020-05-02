@@ -4,7 +4,24 @@ import {css} from '@emotion/core'
 import Layout from '../components/layouts/Layout';
 import { Form, Field, InputSubmt } from './../components/ui/Form';
 
+// validations
+import useValidation from './../components/hooks/useValidation';
+import validateCreateaccount from './../validation/validateCreateAccount';
+
+const INITIAL_STATE = {
+  name: '',
+  email: '',
+  password: ''
+}
+
 export default function CreateAcct() {
+
+    const {values,errors,submitForm,handelChange,handelSubmit} = useValidation(INITIAL_STATE,validateCreateaccount,createAccount)
+
+    createAccount = () =>{
+
+    }
+
   return (
     <div> 
       <Layout>
