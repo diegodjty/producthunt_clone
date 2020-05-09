@@ -1,5 +1,6 @@
-import React from 'react'
+import React,{useState} from 'react'
 import styled from '@emotion/styled';
+import Router from 'next/router'
 import {css} from '@emotion/core'
 import Layout from '../components/layouts/Layout';
 import { Form, Field, InputSubmt, Error } from './../components/ui/Form';
@@ -16,15 +17,18 @@ const INITIAL_STATE = {
 }
 
 export default function CreateAcct() {
-
+  
+    const [error, setError] = useState(false)
     const {values,errors,submitForm,handelChange,handelSubmit,handleBlur} = useValidation(INITIAL_STATE,validateCreateaccount,createAccount)
 
     const { name, email, password} = values;
     async function createAccount() {
       try {
-        await firebase.signUp(name, email, password)   
+        await firebase.signUp(name, email, password)
+        Router.push('/') 
       } catch (error) {
-        console.error('an error occured creating user', error)
+        console.error('an error occured creating user', error.message)
+        setError(error.message)
       }
     }
 
@@ -72,6 +76,7 @@ export default function CreateAcct() {
               />
             </Field>
             {errors.password && <Error>{errors.password}</Error>}
+            {error && <Error>{error}</Error>}
             <InputSubmt
               onSubmit={handelSubmit}
               onBlur={handleBlur}
