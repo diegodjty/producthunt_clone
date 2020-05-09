@@ -12,37 +12,42 @@ const useValidation = (initialState,validate, fn) => {
     useEffect( () => {
         if(submitForm){
             const noError = Object.keys(errors).length === 0;
-
-
             if(noError){
                 fn(); // function that executes in the component
             }
             setSubmitForm(false)
         }
     
-    },[])
+    },[errors])
 
     // function that execute when user writes somethign
     const handelChange = (e) =>{
         setValues({
-            ...value,
+            ...values,
             [e.target.name] : e.target.value
         })
     }
     // when user submits
     const handelSubmit = e =>{
-        e.prevent.default();
+        e.preventDefault()
         const validationError = validate(values)
         setErrors(validationError)
-        setSubmitForm(false)
+        setSubmitForm(true)
 
-    }
+     }
+
+     const handleBlur = () =>{
+        const validationError = validate(values)
+        setErrors(validationError)
+     }
+
     return {
         values,
         errors,
         submitForm,
         handelChange,
-        handelSubmit
+        handelSubmit,
+        handleBlur
     };
 }
  

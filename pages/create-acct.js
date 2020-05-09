@@ -2,11 +2,12 @@ import React from 'react'
 import styled from '@emotion/styled';
 import {css} from '@emotion/core'
 import Layout from '../components/layouts/Layout';
-import { Form, Field, InputSubmt } from './../components/ui/Form';
-
+import { Form, Field, InputSubmt, Error } from './../components/ui/Form';
+import firebase from '../firebase';
 // validations
-import useValidation from './../components/hooks/useValidation';
-import validateCreateaccount from './../validation/validateCreateAccount';
+import useValidation from '../components/hooks/useValidation';
+import validateCreateaccount from '../validation/validateCreateAccount';
+
 
 const INITIAL_STATE = {
   name: '',
@@ -16,10 +17,15 @@ const INITIAL_STATE = {
 
 export default function CreateAcct() {
 
-    const {values,errors,submitForm,handelChange,handelSubmit} = useValidation(INITIAL_STATE,validateCreateaccount,createAccount)
+    const {values,errors,submitForm,handelChange,handelSubmit,handleBlur} = useValidation(INITIAL_STATE,validateCreateaccount,createAccount)
 
-    createAccount = () =>{
-
+    const { name, email, password} = values;
+    async function createAccount() {
+      try {
+        await firebase.signUp(name, email, password)   
+      } catch (error) {
+        console.error('an error occured creating user', error)
+      }
     }
 
   return (
@@ -29,7 +35,7 @@ export default function CreateAcct() {
           <h1 css={css`text-align: center;margin-top: 5rem;`}
             >Create Account
           </h1>
-          <Form action="">
+          <Form noValidate onSubmit={handelSubmit} action="">
             <Field>
               <label htmlFor="name">Name</label>
               <input 
@@ -37,8 +43,11 @@ export default function CreateAcct() {
                 name="name" 
                 id="name"
                 placeholder="Your name"
+                onChange={handelChange}
               />
-            </Field>
+              </Field>
+              {errors.name && <Error>{errors.name}</Error>}
+            
             <Field>
               <label htmlFor="email">Email</label>
               <input 
@@ -46,8 +55,11 @@ export default function CreateAcct() {
                 name="email" 
                 id="email"
                 placeholder="email"
+                onChange={handelChange}
+                onBlur={handleBlur}
               />
             </Field>
+            {errors.email && <Error>{errors.email}</Error>}
             <Field>
               <label htmlFor="password">Password</label>
               <input 
@@ -55,9 +67,14 @@ export default function CreateAcct() {
                 name="password" 
                 id="password"
                 placeholder="Your password"
+                onChange={handelChange}
+                onBlur={handleBlur}
               />
             </Field>
-            <InputSubmt 
+            {errors.password && <Error>{errors.password}</Error>}
+            <InputSubmt
+              onSubmit={handelSubmit}
+              onBlur={handleBlur}
               type="submit"
               value="Create account"
             />
