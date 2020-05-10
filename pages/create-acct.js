@@ -48,6 +48,7 @@ export default function CreateAcct() {
                 id="name"
                 placeholder="Your name"
                 onChange={handelChange}
+                onBlur={handleBlur}
               />
               </Field>
               {errors.name && <Error>{errors.name}</Error>}
