@@ -6,7 +6,7 @@ import Layout from '../components/layouts/Layout';
 import { Form, Field, InputSubmt, Error } from './../components/ui/Form';
 import firebase from '../firebase';
 // validations
-import useValidation from '../components/hooks/useValidation';
+import useValidation from '../hooks/useValidation';
 import validateCreateaccount from '../validation/validateCreateAccount';
 
 
