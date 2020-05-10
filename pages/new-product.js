@@ -7,13 +7,13 @@ import { Form, Field, InputSubmt, Error } from './../components/ui/Form';
 import firebase from '../firebase';
 // validations
 import useValidation from '../hooks/useValidation';
-import validateCreateaccount from '../validation/validateCreateAccount';
+import validateCreateProduct from '../validation/validateCreateProduct'
 
 
 const INITIAL_STATE = {
   name: '',
   company: '',
-  image : '',
+  // image : '',
   url: '',
   description: '',
   
@@ -22,10 +22,9 @@ const INITIAL_STATE = {
 export default function NewProduct() {
   
   const [error, setError] = useState(false)
-  const {values,errors,submitForm,handelChange,handelSubmit,handleBlur} = useValidation(INITIAL_STATE,validateCreateaccount,createAccount)
+  const {values,errors,submitForm,handelChange,handelSubmit,handleBlur} = useValidation(INITIAL_STATE,validateCreateProduct,createAccount)
 
-  const { name, company, image, url,
-  description} = values;
+  const { name, company, image, url,description} = values;
   async function createAccount() {
     try {
       await firebase.signUp(name, email, password)
@@ -74,7 +73,7 @@ return (
             </Field>
             {errors.company && <Error>{errors.company}</Error>}
 
-            <Field>
+            {/* <Field>
               <label htmlFor="img">Image</label>
               <input 
                 type="file" 
@@ -85,7 +84,7 @@ return (
                 onBlur={handleBlur}
               />
             </Field>
-            {errors.image && <Error>{errors.image}</Error>}
+            {errors.image && <Error>{errors.image}</Error>} */}
             <Field>
               <label htmlFor="url">Url</label>
               <input 
@@ -93,7 +92,7 @@ return (
                 name="url" 
                 id="url"
                 value={url}
-                placeholder="Your url"
+                placeholder="Your product url"
                 onChange={handelChange}
                 onBlur={handleBlur}
               />
