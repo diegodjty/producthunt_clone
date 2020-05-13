@@ -48,7 +48,6 @@ export default function CreateAcct() {
                 id="name"
                 placeholder="Your name"
                 onChange={handelChange}
-                onBlur={handleBlur}
               />
               </Field>
               {errors.name && <Error>{errors.name}</Error>}
@@ -79,8 +78,6 @@ export default function CreateAcct() {
             {errors.password && <Error>{errors.password}</Error>}
             {error && <Error>{error}</Error>}
             <InputSubmt
-              onSubmit={handelSubmit}
-              onBlur={handleBlur}
               type="submit"
               value="Create account"
             />

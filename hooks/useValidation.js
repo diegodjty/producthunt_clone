@@ -14,6 +14,7 @@ const useValidation = (initialState,validate, fn) => {
             const noError = Object.keys(errors).length === 0;
             if(noError){
                 fn(); // function that executes in the component
+                
             }
             setSubmitForm(false)
         }

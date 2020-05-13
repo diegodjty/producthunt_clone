@@ -23,12 +23,7 @@ export default function validateCreateProduct(values){
         errors.description = "description is required"
     }
 
-    // validate password of user
-    if(!values.password){
-        errors.password ="Password is required";
-    }else if(values.password.length < 6){
-        errors.password ="Password needs to be at least 6 characters"
-    }
+   
 
     return errors
 }

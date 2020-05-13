@@ -1,10 +1,10 @@
-import React,{useState} from 'react'
+import React,{useState,useContext} from 'react'
 import styled from '@emotion/styled';
-import Router from 'next/router'
+import Router,{useRouter} from 'next/router'
 import {css} from '@emotion/core'
 import Layout from '../components/layouts/Layout';
 import { Form, Field, InputSubmt, Error } from './../components/ui/Form';
-import firebase from '../firebase';
+import {FirebaseContext} from '../firebase';
 // validations
 import useValidation from '../hooks/useValidation';
 import validateCreateProduct from '../validation/validateCreateProduct'
@@ -19,20 +19,38 @@ const INITIAL_STATE = {
   
 }
 
-export default function NewProduct() {
+const NewProduct = () => {
   
   const [error, setError] = useState(false)
-  const {values,errors,submitForm,handelChange,handelSubmit,handleBlur} = useValidation(INITIAL_STATE,validateCreateProduct,createAccount)
+  const {values,errors,submitForm,handelChange,handelSubmit,handleBlur} = useValidation(INITIAL_STATE,validateCreateProduct,createProduct)
 
   const { name, company, image, url,description} = values;
-  async function createAccount() {
-    try {
-      await firebase.signUp(name, email, password)
-      Router.push('/') 
-    } catch (error) {
-      console.error('an error occured creating user', error.message)
-      setError(error.message)
+
+  // routing hook to redirect
+  const router = useRouter();
+
+  // context with crud operation firebase
+  const {user, firebase} = useContext(FirebaseContext)
+
+  async function createProduct() {
+    console.log('diego')
+    if(!user){
+      return router.push('/login')
     }
+
+    // create object of product
+    const product = {
+      name,
+      company,
+      url,
+      description,
+      votes: 0,
+      comments: [],
+      created: Date.now()
+    }
+    console.log(product);
+    // insert in databse
+    firebase.db.collection('products').add(product);
   }
 
 return (
@@ -42,7 +60,7 @@ return (
         <h1 css={css`text-align: center;margin-top: 5rem;`}
           >New Product
         </h1>
-        <Form noValidate onSubmit={handelSubmit} action="">
+        <Form  onSubmit={handelSubmit} noValidate>
 
           <fieldset>
             <legend>General info</legend>
@@ -118,8 +136,6 @@ return (
 
           {error && <Error>{error}</Error>}
           <InputSubmt
-            onSubmit={handelSubmit}
-            onBlur={handleBlur}
             type="submit"
             value="Create product"
           />
@@ -129,3 +145,5 @@ return (
   </div>
 )
 }
+
+export default NewProduct
