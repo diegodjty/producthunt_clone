@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
+import Link from 'next/link'
 
 const Product = styled.li`
     padding: 4rem;
@@ -85,7 +86,9 @@ const Votes = styled.div`
                     <Image src={imageUrl} alt=""/>
                  </div>
                  <div>
-                     <Title>{name}</Title>
+                     <Link href="/products/[id]" as={`/products/${id}`}>
+                        <Title>{name}</Title>
+                    </Link>
                      <DesctiptionText>{description}</DesctiptionText>
                      <Comments>
                          <div>
