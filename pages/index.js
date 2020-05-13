@@ -35,14 +35,14 @@ export default function Home() {
       <Layout>
           <div className="listado-productos">
             <div className="contenedor">
-              <div className="bg-white">
+              <ul className="bg-white">
                 {products.map( product =>(
                   <ProductDetails
                     key={product.id}
                     product={product}
                   />
                 ))}
-              </div>
+              </ul>
             </div>
           </div>
       </Layout>
