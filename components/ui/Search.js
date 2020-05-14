@@ -31,7 +31,7 @@ const Search = () => {
                 type="text"
                 placeholder=" Search Products"
             />
-            <InputSubmit type="submit">Search</InputSubmit>
+            <InputSubmit type="submit"></InputSubmit>
         </form>
     )
 }
