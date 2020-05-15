@@ -28,7 +28,7 @@ const Product = () => {
     const {query: {id}} = router;
 
     // firebase context
-    const {firebase} = useContext(FirebaseContext)
+    const {firebase,user} = useContext(FirebaseContext)
 
     useEffect( ()=>{
         if(id){
@@ -61,21 +61,25 @@ const Product = () => {
                     <img src={imageUrl} alt=""/>
                     <p>{description}</p>
 
-                    <h2>Add your comment</h2>
-                    <form>
-                        <Field >
-                            <input 
-                                type="text" 
-                                name="message" 
-                                i
-                            />
-                        </Field>
-                        <InputSubmt
-                            type="submit"
-                            value=" Add comment "
-                        >
-                        </InputSubmt>
-                    </form>
+                    {user && (
+                        <>
+                            <h2>Add your comment</h2>
+                            <form>
+                                <Field >
+                                    <input 
+                                        type="text" 
+                                        name="message" 
+                                        i
+                                    />
+                                </Field>
+                                <InputSubmt
+                                    type="submit"
+                                    value=" Add comment "
+                                >
+                                </InputSubmt>
+                            </form>
+                        </>
+                    )}
 
                     <h2 css={css`margin: 2rem 0;`}>Comments</h2>
                     {comments.map(comment =>(
@@ -92,9 +96,11 @@ const Product = () => {
                             href={url}
                         >Visit URL</Button>
 
-                        <Button>
-                            Vote
-                        </Button>
+                        {user && (
+                            <Button>
+                                Vote
+                            </Button>
+                        )}
                         <p css={css`text-align:center;`}>{votes} Votes</p>
                     </aside>
                 </ProductContainer>

@@ -9,6 +9,7 @@ import FileUploader from 'react-firebase-file-uploader'
 // validations
 import useValidation from '../hooks/useValidation';
 import validateCreateProduct from '../validation/validateCreateProduct'
+import Error404 from '../components/layouts/404';
 
 
 const INITIAL_STATE = {
@@ -98,93 +99,97 @@ const NewProduct = () => {
 return (
   <div> 
     <Layout>
-      <>
-        <h1 css={css`text-align: center;margin-top: 5rem;`}
-          >New Product
-        </h1>
-        <Form  onSubmit={handelSubmit} noValidate>
-
-          <fieldset>
-            <legend>General info</legend>
-            <Field>
-              <label htmlFor="name">Name</label>
-              <input 
-                type="text" 
-                name="name" 
-                id="name"
-                placeholder="Your name"
-                onChange={handelChange}
-                onBlur={handleBlur}
-              />
-            </Field>
-            {errors.name && <Error>{errors.name}</Error>}
-
-            <Field>
-              <label htmlFor="company">Company</label>
-              <input 
-                type="text" 
-                name="company" 
-                id="company"
-                value={company}
-                placeholder="Your company"
-                onChange={handelChange}
-                onBlur={handleBlur}
-              />
-            </Field>
-            {errors.company && <Error>{errors.company}</Error>}
-
-            <Field>
-              <label htmlFor="img">Image</label>
-              <FileUploader 
-                accept="image/*" 
-                name="image" 
-                id="image"
-                randomizeFilename
-                storageRef={firebase.storage.ref('products')}
-                inUploadStart={handleUploadStart}
-                onUploadError={handleUploadError}
-                onUploadSuccess={handleUploadSuccess}
-                onProgress={handleProgress}
-              />
-            </Field>
-            <Field>
-              <label htmlFor="url">Url</label>
-              <input 
-                type="url" 
-                name="url" 
-                id="url"
-                value={url}
-                placeholder="Your product url"
-                onChange={handelChange}
-                onBlur={handleBlur}
-              />
-            </Field>
-            {errors.url && <Error>{errors.url}</Error>}
-          </fieldset>
-          <fieldset>
-            <legend>About your product</legend>
-            <Field>
-              <label htmlFor="description">Description</label>
-              <textarea 
-                name="description" 
-                id="description"
-                value={description}
-                placeholder="Your description"
-                onChange={handelChange}
-                onBlur={handleBlur}
-              />
-            </Field>
-            {errors.description && <Error>{errors.description}</Error>}
-
-          </fieldset>
-
-          {error && <Error>{error}</Error>}
-          <InputSubmt
-            type="submit"
-            value="Create product"
-          />
-        </Form>
-      </>
+      
+        {!user ? <Error404 /> : (
+          <> 
+          <h1 css={css`text-align: center;margin-top: 5rem;`}
+            >New Product
+          </h1>
+          <Form  onSubmit={handelSubmit} noValidate>
+  
+            <fieldset>
+              <legend>General info</legend>
+              <Field>
+                <label htmlFor="name">Name</label>
+                <input 
+                  type="text" 
+                  name="name" 
+                  id="name"
+                  placeholder="Your name"
+                  onChange={handelChange}
+                  onBlur={handleBlur}
+                />
+              </Field>
+              {errors.name && <Error>{errors.name}</Error>}
+  
+              <Field>
+                <label htmlFor="company">Company</label>
+                <input 
+                  type="text" 
+                  name="company" 
+                  id="company"
+                  value={company}
+                  placeholder="Your company"
+                  onChange={handelChange}
+                  onBlur={handleBlur}
+                />
+              </Field>
+              {errors.company && <Error>{errors.company}</Error>}
+  
+              <Field>
+                <label htmlFor="img">Image</label>
+                <FileUploader 
+                  accept="image/*" 
+                  name="image" 
+                  id="image"
+                  randomizeFilename
+                  storageRef={firebase.storage.ref('products')}
+                  inUploadStart={handleUploadStart}
+                  onUploadError={handleUploadError}
+                  onUploadSuccess={handleUploadSuccess}
+                  onProgress={handleProgress}
+                />
+              </Field>
+              <Field>
+                <label htmlFor="url">Url</label>
+                <input 
+                  type="url" 
+                  name="url" 
+                  id="url"
+                  value={url}
+                  placeholder="Your product url"
+                  onChange={handelChange}
+                  onBlur={handleBlur}
+                />
+              </Field>
+              {errors.url && <Error>{errors.url}</Error>}
+            </fieldset>
+            <fieldset>
+              <legend>About your product</legend>
+              <Field>
+                <label htmlFor="description">Description</label>
+                <textarea 
+                  name="description" 
+                  id="description"
+                  value={description}
+                  placeholder="Your description"
+                  onChange={handelChange}
+                  onBlur={handleBlur}
+                />
+              </Field>
+              {errors.description && <Error>{errors.description}</Error>}
+  
+            </fieldset>
+  
+            {error && <Error>{error}</Error>}
+            <InputSubmt
+              type="submit"
+              value="Create product"
+            />
+          </Form>
+        </>
+        )}
+      
     </Layout>
   </div>
 )
