@@ -61,7 +61,9 @@ const NewProduct = () => {
       creator: {
         id: user.uid,
         name: user.displayName
-      }
+      },
+      hasVoted: []
+
     }
     console.log(product);
     // insert in databse
