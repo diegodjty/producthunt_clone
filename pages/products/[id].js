@@ -18,10 +18,22 @@ const ProductContainer = styled.div`
    }
 `;
 
+const ProductCreator = styled.p`
+    padding: .5rem 2rem;
+    background-color: #DA552F;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    display: inline-block;
+    text-align: center;
+
+`;
+
 const Product = () => {
 
     const [product,setProduct] = useState({})
     const [error,setError] = useState(false);
+    const [comment,setComment] = useState({});
 
     // Routing to get actual id
     const router = useRouter();
@@ -76,6 +88,48 @@ const Product = () => {
 
     }
 
+    // Functions to create comments
+    const commentsChange = e => {
+        setComment({
+            ...comment,
+            [e.target.name] : e.target.value
+        })
+    }
+
+    // Identify if the comment is from the maker of the product
+    const isCreator = id =>{
+        if(creator.id == id){
+            return true;
+        }
+    }
+
+    const addComment = e => {
+        e.preventDefault();
+
+        if(!user){
+            return router.push('/login')
+        }
+
+        // extra info to comment
+        comment.userId = user.uid;
+        comment.name = user.displayName;
+
+        // get copie of comments and add to array
+        const newComments = [...comments,comment]
+
+        //update DB
+        firebase.db.collection('products').doc(id).update({
+            comments: newComments
+        })
+
+        //update State
+        setProduct({
+            ...product,
+            comments: newComments
+        })
+
+    }
+
     return (
     <Layout>
         <>
@@ -91,12 +145,12 @@ const Product = () => {
                     {user && (
                         <>
                             <h2>Add your comment</h2>
-                            <form>
+                            <form onSubmit={addComment}>
                                 <Field >
                                     <input 
                                         type="text" 
                                         name="message" 
-                                        i
+                                        onChange={commentsChange}
                                     />
                                 </Field>
                                 <InputSubmt
@@ -109,12 +163,26 @@ const Product = () => {
                     )}
 
                     <h2 css={css`margin: 2rem 0;`}>Comments</h2>
-                    {comments.map(comment =>(
-                        <li>
-                            <p>{comment.name}</p>
-                            
-                        </li>
-                    ))}
+                    {comments.length === 0 ? "No comments yet" : (
+                        <ul>
+                            {comments.map((comment, i) => (
+                                <li
+                                    key={`${comment.userId}-${i}`}
+                                    css={css`border: solid 1px #e1e1e1;padding: 2rem;`}
+                                >
+                                    <p>{comment.message}</p>
+                                    <p>By:
+                                        <span
+                                            css={css`font-weight:bold;`}
+                                        >
+                                           {' '} { comment.name}
+                                        </span>
+                                    </p>
+                                    {isCreator(comment.userId) && <ProductCreator> Creator</ProductCreator>}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                     </div>
                     <aside>
                         <Button
