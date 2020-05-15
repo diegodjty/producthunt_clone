@@ -49,6 +49,27 @@ const Product = () => {
     if(Object.keys(product).length===0) return 'Loading'
 
     const {comments , company , description , name, url, votes , imageUrl,created,creator} = product
+
+    // Manage and validate votes
+    const productVote = () => {
+        if(!user){
+            router.push('/login')
+        }
+
+        // get and add new votes
+        const newTotal = votes+1
+
+        //update DB
+        firebase.db.collection('products').doc(id).update({votes: newTotal})
+
+        //update State
+        setProduct({
+            ...product,
+            votes: newTotal
+        })
+
+    }
+
     return (
     <Layout>
         <>
@@ -97,7 +118,9 @@ const Product = () => {
                         >Visit URL</Button>
 
                         {user && (
-                            <Button>
+                            <Button
+                                onClick={productVote}
+                            >
                                 Vote
                             </Button>
                         )}
