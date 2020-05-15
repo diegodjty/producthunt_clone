@@ -40,6 +40,7 @@ const NewProduct = () => {
   // context with crud operation firebase
   const {user, firebase} = useContext(FirebaseContext)
 
+  
   async function createProduct() {
     console.log('diego')
     if(!user){
@@ -55,7 +56,11 @@ const NewProduct = () => {
       description,
       votes: 0,
       comments: [],
-      created: Date.now()
+      created: Date.now(),
+      creator: {
+        id: user.uid,
+        name: user.displayName
+      }
     }
     console.log(product);
     // insert in databse

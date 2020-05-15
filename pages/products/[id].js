@@ -7,6 +7,8 @@ import {css} from '@emotion/core'
 import styled from '@emotion/styled'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import { InputSubmt,Field } from './../../components/ui/Form';
+import Button from './../../components/ui/Button';
+
 
 const ProductContainer = styled.div`
    @media (min-width: 768px){
@@ -46,7 +48,7 @@ const Product = () => {
 
     if(Object.keys(product).length===0) return 'Loading'
 
-    const {comments , company , description , name, url, votes , imageUrl,created} = product
+    const {comments , company , description , name, url, votes , imageUrl,created,creator} = product
     return (
     <Layout>
         <>
@@ -55,7 +57,7 @@ const Product = () => {
                     <h1 css={css`text-align:center;margin-top:5rem;`}>{name}</h1>
                 <ProductContainer>
                     <div>
-                    <p>public: {formatDistanceToNow(new Date(created))} </p>
+                    <p>{formatDistanceToNow(new Date(created))} ago by {creator.name} </p>
                     <img src={imageUrl} alt=""/>
                     <p>{description}</p>
 
@@ -75,16 +77,25 @@ const Product = () => {
                         </InputSubmt>
                     </form>
 
-                    <h2 css={css`margin: 2rem 0`}>Comments</h2>
+                    <h2 css={css`margin: 2rem 0;`}>Comments</h2>
                     {comments.map(comment =>(
                         <li>
                             <p>{comment.name}</p>
-                            <p>By: {comment.userName}</p>
+                            
                         </li>
                     ))}
                     </div>
                     <aside>
-                        2
+                        <Button
+                            target="_blank"
+                            bgColor="true"
+                            href={url}
+                        >Visit URL</Button>
+
+                        <Button>
+                            Vote
+                        </Button>
+                        <p css={css`text-align:center;`}>{votes} Votes</p>
                     </aside>
                 </ProductContainer>
             </div> 
