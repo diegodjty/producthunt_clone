@@ -34,6 +34,7 @@ const Product = () => {
     const [product,setProduct] = useState({})
     const [error,setError] = useState(false);
     const [comment,setComment] = useState({});
+    const [consultDB,setConsultDB] = useState(true)
 
     // Routing to get actual id
     const router = useRouter();
@@ -43,14 +44,16 @@ const Product = () => {
     const {firebase,user} = useContext(FirebaseContext)
 
     useEffect( ()=>{
-        if(id){
+        if(id && consultDB){
             const getProduct = async () =>{
                 const productQuery = await firebase.db.collection('products').doc(id);
                 const product = await productQuery.get();
                 if(product.exists){
                     setProduct(product.data())
+                    setConsultDB(false)
                 }else{
                     setError(true)
+                    setConsultDB(false)
                 }
             }
             getProduct()
@@ -58,7 +61,7 @@ const Product = () => {
         }
     },[id, product])
 
-    if(Object.keys(product).length===0) return 'Loading'
+    if(Object.keys(product).length===0 && !error) return 'Loading'
 
     const {comments , company , description , name, url, votes , imageUrl,created,creator,hasVoted} = product
 
@@ -85,6 +88,7 @@ const Product = () => {
             ...product,
             votes: newTotal
         })
+        setConsultDB(true)
 
     }
 
@@ -127,81 +131,114 @@ const Product = () => {
             ...product,
             comments: newComments
         })
+        setConsultDB(true) // consult DB because there is a new comment
 
     }
 
+    // function that checks that creator is the same that is autheticated
+    const canDelete = () =>{
+        if(!user) return false;
+
+        if(creator.id === user.uid){
+            return true
+        }
+    }
+    
+    // Delete a product from DB
+    const deleteProduct = async () =>{
+        if(!user){
+            return router.push('/login')
+        }
+        if(creator.id!== user.uid){
+            return router.push('/')
+        }
+
+        try {
+            await firebase.db.collection('products').doc(id).delete();
+            router.push('/')
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
     <Layout>
         <>
-            {error && <Error404 />}
-            <div className="contenedor">
+            {error ? <Error404/> : (
+                <div className="contenedor">
                     <h1 css={css`text-align:center;margin-top:5rem;`}>{name}</h1>
-                <ProductContainer>
-                    <div>
-                    <p>{formatDistanceToNow(new Date(created))} ago by {creator.name} </p>
-                    <img src={imageUrl} alt=""/>
-                    <p>{description}</p>
-
-                    {user && (
-                        <>
-                            <h2>Add your comment</h2>
-                            <form onSubmit={addComment}>
-                                <Field >
-                                    <input 
-                                        type="text" 
-                                        name="message" 
-                                        onChange={commentsChange}
-                                    />
-                                </Field>
-                                <InputSubmt
-                                    type="submit"
-                                    value=" Add comment "
-                                >
-                                </InputSubmt>
-                            </form>
-                        </>
-                    )}
-
-                    <h2 css={css`margin: 2rem 0;`}>Comments</h2>
-                    {comments.length === 0 ? "No comments yet" : (
-                        <ul>
-                            {comments.map((comment, i) => (
-                                <li
-                                    key={`${comment.userId}-${i}`}
-                                    css={css`border: solid 1px #e1e1e1;padding: 2rem;`}
-                                >
-                                    <p>{comment.message}</p>
-                                    <p>By:
-                                        <span
-                                            css={css`font-weight:bold;`}
-                                        >
-                                           {' '} { comment.name}
-                                        </span>
-                                    </p>
-                                    {isCreator(comment.userId) && <ProductCreator> Creator</ProductCreator>}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                    </div>
-                    <aside>
-                        <Button
-                            target="_blank"
-                            bgColor="true"
-                            href={url}
-                        >Visit URL</Button>
+                    <ProductContainer>
+                        <div>
+                            <p>{formatDistanceToNow(new Date(created))} ago by {creator.name} </p>
+                            <img src={imageUrl} alt=""/>
+                            <p>{description}</p>
 
                         {user && (
-                            <Button
-                                onClick={productVote}
+                    <>
+                        <h2>Add your comment</h2>
+                        <form onSubmit={addComment}>
+                            <Field >
+                                <input 
+                                    type="text" 
+                                    name="message" 
+                                    onChange={commentsChange}
+                                />
+                            </Field>
+                            <InputSubmt
+                                type="submit"
+                                value=" Add comment "
                             >
-                                Vote
-                            </Button>
-                        )}
-                        <p css={css`text-align:center;`}>{votes} Votes</p>
-                    </aside>
-                </ProductContainer>
-            </div> 
+                            </InputSubmt>
+                        </form>
+                    </>
+                )}
+
+                <h2 css={css`margin: 2rem 0;`}>Comments</h2>
+                {comments.length === 0 ? "No comments yet" : (
+                    <ul>
+                        {comments.map((comment, i) => (
+                            <li
+                                key={`${comment.userId}-${i}`}
+                                css={css`border: solid 1px #e1e1e1;padding: 2rem;`}
+                            >
+                                <p>{comment.message}</p>
+                                <p>By:
+                                    <span
+                                        css={css`font-weight:bold;`}
+                                    >
+                                       {' '} { comment.name}
+                                    </span>
+                                </p>
+                                {isCreator(comment.userId) && <ProductCreator> Creator</ProductCreator>}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+                </div>
+                <aside>
+                    <Button
+                        target="_blank"
+                        bgColor="true"
+                        href={url}
+                    >Visit URL</Button>
+
+                    {user && (
+                        <Button
+                            onClick={productVote}
+                        >
+                            Vote
+                        </Button>
+                    )}
+                    <p css={css`text-align:center;`}>{votes} Votes</p>
+                </aside>
+            </ProductContainer>
+            {canDelete() && 
+                <Button
+                    onClick={deleteProduct}
+                >Delete Product</Button>
+            }
+        </div> 
+            )}
+            
         </>
     </Layout>  );
 }

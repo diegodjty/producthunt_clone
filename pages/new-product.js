@@ -146,7 +146,7 @@ return (
                   id="image"
                   randomizeFilename
                   storageRef={firebase.storage.ref('products')}
-                  inUploadStart={handleUploadStart}
+                  onUploadStart={handleUploadStart}
                   onUploadError={handleUploadError}
                   onUploadSuccess={handleUploadSuccess}
                   onProgress={handleProgress}
