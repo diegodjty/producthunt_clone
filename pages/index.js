@@ -1,34 +1,13 @@
-import React,{useEffect,useState,useContext} from 'react'
+import React from 'react'
 import styled from '@emotion/styled';
-import {FirebaseContext} from './../firebase'
 import Layout from '../components/layouts/Layout';
 import ProductDetails from './../components/layouts/ProductDetails';
-
+import useProducts from './../hooks/useProducts';
 
 
 export default function Home() {
 
-  const [products,setProducts] = useState([]);
-
-  const {firebase } = useContext(FirebaseContext);
-
-  useEffect( ()=>{
-    const getProducts = () => {
-      firebase.db.collection('products').orderBy('created','desc').onSnapshot(handleSnapshot)
-    }
-    getProducts()
-  },[]);
-
-  function handleSnapshot(snapshot){
-    const products = snapshot.docs.map( doc =>{
-      return{
-        id: doc.id,
-        ...doc.data()
-      }
-    })
-    setProducts(products)
-  }
-
+  const {products} = useProducts('created')
 
   return (
     <div> 
