@@ -6,7 +6,7 @@ import {css} from '@emotion/core'
 import Search from '../ui/Search';
 import Navigation from './Navigation';
 import Button from '../ui/Button';
-import {FirebaseContext} from '../../firebase';
+import FirebaseContext from './../../firebase/context';
 
 const HeaderContainer = styled.div`
     max-width: 1200px;

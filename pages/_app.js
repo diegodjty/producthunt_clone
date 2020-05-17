@@ -1,7 +1,7 @@
 import App from 'next/app';
-import firebase ,{FirebaseContext} from '../firebase'
+import firebase  from '../firebase'
 import useAuth from '../hooks/useAuth'
-
+import FirebaseContext from './../firebase/context';
 
 const MyApp = (props) =>{
     const user  = useAuth()
